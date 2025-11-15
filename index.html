@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Lógica Booleana</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(45deg, #242b2e, #222f3b, #334f69, #0b2024);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+        }
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        .card {
+            background-color: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+        .btn-toggle.active {
+            transform: scale(1.1);
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.7);
+        }
+        .btn-gate.active {
+            background-color: #f87171 !important;
+            color: white !important;
+            transform: translateY(-4px);
+        }
+        .truth-table th, .truth-table td {
+            text-align: center;
+            padding: 10px;
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            white-space: nowrap; /* Impede que os cabeçalhos quebrem linha */
+        }
+        .truth-table th {
+            background-color: rgba(0, 0, 0, 0.3);
+            font-size: 0.9em;
+        }
+        .truth-table .true { color: #86efac; font-weight: bold; }
+        .truth-table .false { color: #fda4af; font-weight: bold; }
+    </style>
+</head>
+<body class="p-4 sm:p-6 md:p-8">
+    <div class="max-w-6xl mx-auto"> <!-- Aumentei o max-width para a tabela maior -->
+        <header class="text-center mb-8">
+            <h1 class="text-4xl sm:text-5xl font-bold text-white text-shadow">LogicApex</h1>
+            <p class="text-lg text-white/90 mt-2">Onde Você encontra o ponto mais alto da Lógica!</p>
+        </header>
+
+        <main class="space-y-6">
+            <!-- Seção de Entradas -->
+            <div class="card p-6">
+                <h2 class="text-2xl font-bold text-white mb-4 text-center">1. Escolha os valores das Entradas</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <!-- Entrada A -->
+                    <div id="input-a-card" class="text-center p-4 bg-white/20 rounded-xl transition-all duration-300">
+                        <h3 class="text-xl font-semibold text-white">Entrada A</h3>
+                        <div id="display-a" class="text-4xl font-bold my-3 text-yellow-300">FALSO</div>
+                        <div class="flex justify-center gap-2">
+                            <button onclick="setInputState('a', true)" class="btn-toggle-a w-full py-2 bg-green-500 text-white font-semibold rounded-lg shadow-md hover:bg-green-600 transition-transform transform hover:scale-105">VERDADEIRO</button>
+                            <button onclick="setInputState('a', false)" class="btn-toggle-a w-full py-2 bg-red-500 text-white font-semibold rounded-lg shadow-md hover:bg-red-600 transition-transform transform hover:scale-105 active">FALSO</button>
+                        </div>
+                    </div>
+                    <!-- Entrada B -->
+                    <div id="input-b-card" class="text-center p-4 bg-white/20 rounded-xl transition-all duration-300">
+                        <h3 class="text-xl font-semibold text-white">Entrada B</h3>
+                        <div id="display-b" class="text-4xl font-bold my-3 text-yellow-300">FALSO</div>
+                        <div class="flex justify-center gap-2">
+                            <button onclick="setInputState('b', true)" class="btn-toggle-b w-full py-2 bg-green-500 text-white font-semibold rounded-lg shadow-md hover:bg-green-600 transition-transform transform hover:scale-105">VERDADEIRO</button>
+                            <button onclick="setInputState('b', false)" class="btn-toggle-b w-full py-2 bg-red-500 text-white font-semibold rounded-lg shadow-md hover:bg-red-600 transition-transform transform hover:scale-105 active">FALSO</button>
+                        </div>
+                    </div>
+                    <!-- Entrada C -->
+                    <div id="input-c-container" class="text-center p-4 bg-white/20 rounded-xl transition-all duration-300 opacity-50">
+                        <h3 class="text-xl font-semibold text-white">Entrada C</h3>
+                        <div id="display-c" class="text-4xl font-bold my-3 text-yellow-300">FALSO</div>
+                        <div class="flex justify-center gap-2">
+                            <button id="btn-c-true" onclick="setInputState('c', true)" class="btn-toggle-c w-full py-2 bg-green-500 text-white font-semibold rounded-lg shadow-md hover:bg-green-600 transition-transform transform hover:scale-105" disabled>VERDADEIRO</button>
+                            <button id="btn-c-false" onclick="setInputState('c', false)" class="btn-toggle-c w-full py-2 bg-red-500 text-white font-semibold rounded-lg shadow-md hover:bg-red-600 transition-transform transform hover:scale-105 active" disabled>FALSO</button>
+                        </div>
+                        <button id="toggle-c" onclick="toggleC()" class="mt-4 w-full py-2 bg-purple-500 text-white font-bold rounded-lg shadow-lg hover:bg-purple-600 transition">Ligar Entrada C</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Seção de Portas Lógicas -->
+            <div class="card p-6">
+                <h2 class="text-2xl font-bold text-white mb-4 text-center">2. Selecione a Porta Lógica</h2>
+                <div class="flex flex-wrap justify-center gap-3 text-center">
+                    <button onclick="selectOperator('AND')" class="btn-gate py-5 px-5 bg-cyan-400 text-cyan-900 font-bold rounded-lg shadow-lg transition-transform transform hover:-translate-y-1 active">E (AND)</button>
+                    <button onclick="selectOperator('OR')" class="btn-gate py-5 px-5 bg-orange-400 text-orange-900 font-bold rounded-lg shadow-lg transition-transform transform hover:-translate-y-1">OU (OR)</button>
+                    <button onclick="selectOperator('NOT')" class="btn-gate py-5 px-5 bg-pink-400 text-pink-900 font-bold rounded-lg shadow-lg transition-transform transform hover:-translate-y-1">NÃO (NOT)</button>
+                    <button onclick="selectOperator('XOR')" class="btn-gate py-5 px-5 bg-lime-400 text-lime-900 font-bold rounded-lg shadow-lg transition-transform transform hover:-translate-y-1">XOR</button>
+                    <button onclick="selectOperator('NAND')" class="btn-gate py-5 px-5 bg-sky-400 text-sky-900 font-bold rounded-lg shadow-lg transition-transform transform hover:-translate-y-1">NAND</button>
+                    <button onclick="selectOperator('NOR')" class="btn-gate py-5 px-5 bg-fuchsia-400 text-fuchsia-900 font-bold rounded-lg shadow-lg transition-transform transform hover:-translate-y-1">NOR</button>
+                    <button onclick="selectOperator('XNOR')" class="btn-gate py-5 px-5 bg-indigo-400 text-indigo-900 font-bold rounded-lg shadow-lg transition-transform transform hover:-translate-y-1">XNOR</button>
+                </div>
+            </div>
+            
+            <!-- Seção de Resultado -->
+            <div class="card p-6 text-center">
+                <h2 class="text-2xl font-bold text-white mb-2">3. Resultado da Porta Lógica (Saída)</h2>
+                <div id="result-display" class="text-7xl font-extrabold transition-colors duration-300">...</div>
+            </div>
+
+            <!-- Seção de Explicação -->
+            <div class="card p-6">
+                <h2 id="explanation-title" class="text-2xl font-bold text-white mb-2">O que é a porta E (AND)?</h2>
+                <p id="explanation-text" class="text-white/90 text-lg"></p>
+            </div>
+
+            <!-- Seção Tabela Verdade para Porta Lógica -->
+            <div class="card p-6">
+                <h2 class="text-2xl font-bold text-white mb-4">Tabela Verdade da Porta Lógica</h2>
+                <div class="overflow-x-auto">
+                    <table id="truth-table" class="w-full text-white truth-table">
+                        <!-- Conteúdo gerado por JavaScript -->
+                    </table>
+                </div>
+            </div>
+
+            <!-- Seção de Equação Personalizada -->
+            <div class="card p-6">
+                <h2 class="text-2xl font-bold text-white mb-4 text-center">4. Monte sua Própria Equação</h2>
+                <div class="flex flex-col sm:flex-row gap-4 items-center">
+                    <input id="custom-equation-input" type="text" class="flex-grow w-full sm:w-auto bg-white/20 text-white rounded-lg p-3 placeholder-white/50 border border-transparent focus:border-cyan-400 focus:ring-0 text-center font-mono" placeholder="(A E B) OU NÃO C">
+                    <button id="generate-custom-table-btn" class="py-3 px-6 bg-green-500 text-white font-bold rounded-lg shadow-lg hover:bg-green-600 transition w-full sm:w-auto">Gerar Tabela da Equação</button>
+                </div>
+                 <p id="equation-error" class="text-red-400 mt-2 text-center h-6"></p>
+            </div>
+
+            <!-- Seção Tabela Verdade da Equação -->
+            <div id="custom-truth-table-container" class="card p-6 hidden">
+                <h2 id="custom-table-title" class="text-2xl font-bold text-white mb-4">...</h2>
+                <div class="overflow-x-auto">
+                    <table id="custom-truth-table" class="w-full text-white truth-table">
+                        <!-- Conteúdo gerado por JavaScript -->
+                    </table>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <script>
+        // --- SEÇÃO 1: LÓGICA DA CALCULADORA SIMPLES ---
+
+        let state = { a: false, b: false, c: false, cEnabled: false, operator: 'AND' };
+
+        const explanations = {
+            'AND': { title: 'O que é a porta E (AND)?', text: 'A porta E (AND) só retorna VERDADEIRO se <strong>TODAS</strong> as entradas forem VERDADEIRAS. Pense nela como um segurança exigente: "Você só entra se você E seu amigo tiverem convites". Se uma única entrada for FALSA, a saída será FALSA.' },
+            'OR': { title: 'O que é a porta OU (OR)?', text: 'A porta OU (OR) retorna VERDADEIRO se <strong>PELO MENOS UMA</strong> das entradas for VERDADEIRA. É uma porta mais inclusiva: "Você pode entrar se você OU seu amigo tiver um convite". Ela só será FALSA se todas as entradas forem FALSAS.' },
+            'NOT': { title: 'O que é a porta NÃO (NOT)?', text: 'A porta NÃO (NOT), ou Inversora, é a mais simples. Ela tem apenas uma entrada (neste caso, usamos a Entrada A) e <strong>inverte</strong> o valor dela. Se a entrada é VERDADEIRA, a saída é FALSA. Se a entrada é FALSA, a saída é VERDADEIRA. É a porta do "contra"!' },
+            'XOR': { title: 'O que é a porta OU Exclusivo (XOR)?', text: 'A porta OU Exclusivo (XOR) retorna VERDADEIRO apenas se um número <strong>ÍMPAR</strong> de entradas for VERDADEIRO. Com duas entradas, isso significa que elas devem ser <strong>DIFERENTES</strong>. Pense nela como uma regra de "um ou outro, mas não ambos nem nenhum".' },
+            'NAND': { title: 'O que é a porta E Negativo (NAND)?', text: 'A porta NAND é o oposto da porta E (AND). Ela retorna FALSO apenas quando <strong>TODAS</strong> as entradas são VERDADEIRAS. Em todos os outros casos, a saída é VERDADEIRA. É como dizer: "A saída é verdadeira, A MENOS QUE todos sejam verdadeiros".' },
+            'NOR': { title: 'O que é a porta OU Negativo (NOR)?', text: 'A porta NOR é o oposto da porta OU (OR). Ela retorna VERDADEIRO apenas quando <strong>TODAS</strong> as entradas são FALSAS. Se pelo menos uma entrada for VERDADEIRA, a saída será FALSA. É como dizer: "A saída só é verdadeira se NINGUÉM tiver um convite".' },
+            'XNOR': { title: 'O que é a porta NÃO OU Exclusivo (XNOR)?', text: 'A porta XNOR é o oposto da XOR. Ela retorna VERDADEIRO se um número <strong>PAR</strong> de entradas for VERDADEIRO (incluindo zero). Com duas entradas, isso significa que elas devem ser <strong>IGUAIS</strong>. É a "porta da igualdade": se as entradas são iguais, a saída é verdadeira.' },
+        };
+        
+        function evaluateLogic(operator, inputs) {
+            switch (operator) {
+                case 'AND': return inputs.every(val => val === true);
+                case 'OR': return inputs.some(val => val === true);
+                case 'NOT': return !inputs[0];
+                case 'NAND': return !inputs.every(val => val === true);
+                case 'NOR': return !inputs.some(val => val === true);
+                case 'XOR': return inputs.filter(val => val === true).length % 2 !== 0;
+                case 'XNOR': return inputs.filter(val => val === true).length % 2 === 0;
+                default: return false;
+            }
+        }
+        
+        function calculate() {
+            const { a, b, c, cEnabled, operator } = state;
+            const isNotGate = operator === 'NOT';
+            const inputs = isNotGate ? [a] : (cEnabled ? [a, b, c] : [a, b]);
+            return evaluateLogic(operator, inputs);
+        }
+
+        function updateUI() {
+            document.getElementById('display-a').textContent = state.a ? 'VERDADE' : 'FALSO';
+            document.getElementById('display-b').textContent = state.b ? 'VERDADE' : 'FALSO';
+            document.getElementById('display-c').textContent = state.c ? 'VERDADE' : 'FALSO';
+
+            const result = calculate();
+            const resultDisplay = document.getElementById('result-display');
+            resultDisplay.textContent = result ? 'VERDADEIRO' : 'FALSO';
+            resultDisplay.style.color = result ? '#86efac' : '#fda4af';
+
+            updateExplanation();
+            updateTruthTable();
+            highlightButtons();
+        }
+
+        function updateExplanation() {
+            const explanation = explanations[state.operator];
+            document.getElementById('explanation-title').innerHTML = explanation.title;
+            document.getElementById('explanation-text').innerHTML = explanation.text;
+        }
+        
+        function updateTruthTable() {
+            const table = document.getElementById('truth-table');
+            table.innerHTML = ''; 
+            const isNotGate = state.operator === 'NOT';
+            const useThreeInputs = state.cEnabled && !isNotGate;
+            const numInputs = isNotGate ? 1 : (useThreeInputs ? 3 : 2);
+            
+            let headerHTML = '<thead><tr>';
+            if (numInputs >= 1) headerHTML += '<th>Entrada A</th>';
+            if (numInputs >= 2) headerHTML += '<th>Entrada B</th>';
+            if (numInputs >= 3) headerHTML += '<th>Entrada C</th>';
+            headerHTML += '<th>Saída</th></tr></thead>';
+            
+            let bodyHTML = '<tbody>';
+            const numRows = Math.pow(2, numInputs);
+
+            for (let i = 0; i < numRows; i++) {
+                let currentInputs = [];
+                for (let j = 0; j < numInputs; j++) {
+                    currentInputs.push((i >> (numInputs - 1 - j)) & 1 ? true : false);
+                }
+                const rowResult = evaluateLogic(state.operator, currentInputs);
+                
+                bodyHTML += '<tr>';
+                currentInputs.forEach(val => {
+                    bodyHTML += `<td class="${val ? 'true' : 'false'}">${val ? 'V' : 'F'}</td>`;
+                });
+                bodyHTML += `<td class="${rowResult ? 'true' : 'false'}">${rowResult ? 'VERDADEIRO' : 'FALSO'}</td>`;
+                bodyHTML += '</tr>';
+            }
+
+            bodyHTML += '</tbody>';
+            table.innerHTML = headerHTML + bodyHTML;
+        }
+
+        function highlightButtons() {
+            document.querySelectorAll('.btn-toggle-a, .btn-toggle-b, .btn-toggle-c, .btn-gate').forEach(b => b.classList.remove('active'));
+            document.querySelector(`.btn-toggle-a[onclick="setInputState('a', ${state.a})"]`).classList.add('active');
+            document.querySelector(`.btn-toggle-b[onclick="setInputState('b', ${state.b})"]`).classList.add('active');
+            if (state.cEnabled) {
+                document.querySelector(`.btn-toggle-c[onclick="setInputState('c', ${state.c})"]`).classList.add('active');
+            }
+            document.querySelector(`.btn-gate[onclick="selectOperator('${state.operator}')"]`).classList.add('active');
+        }
+
+        function setInputState(input, value) {
+            state[input] = value;
+            updateUI();
+        }
+
+        function selectOperator(operator) {
+            state.operator = operator;
+            const isNotGate = operator === 'NOT';
+            document.getElementById('input-a-card').classList.toggle('md:col-span-3', isNotGate);
+            document.getElementById('input-b-card').classList.toggle('hidden', isNotGate);
+            document.getElementById('input-c-container').classList.toggle('hidden', isNotGate);
+            updateUI();
+        }
+
+        function toggleC() {
+            state.cEnabled = !state.cEnabled;
+            const container = document.getElementById('input-c-container');
+            const toggleBtn = document.getElementById('toggle-c');
+            const cButtons = [document.getElementById('btn-c-true'), document.getElementById('btn-c-false')];
+
+            if (state.cEnabled) {
+                container.classList.remove('opacity-50');
+                toggleBtn.textContent = 'Desligar Entrada C';
+                toggleBtn.classList.remove('bg-purple-500', 'hover:bg-purple-600');
+                toggleBtn.classList.add('bg-yellow-500', 'hover:bg-yellow-600');
+                cButtons.forEach(btn => btn.disabled = false);
+            } else {
+                container.classList.add('opacity-50');
+                toggleBtn.textContent = 'Ligar Entrada C';
+                toggleBtn.classList.add('bg-purple-500', 'hover:bg-purple-600');
+                toggleBtn.classList.remove('bg-yellow-500', 'hover:bg-yellow-600');
+                cButtons.forEach(btn => btn.disabled = true);
+            }
+            updateUI();
+        }
+
+        // --- SEÇÃO 2: LÓGICA DO CONSTRUTOR DE EQUAÇÕES ---
+
+        const precedence = { 'NOT': 4, 'AND': 3, 'NAND': 3, 'OR': 2, 'NOR': 2, 'XOR': 2, 'XNOR': 2 };
+        const operators = Object.keys(precedence);
+
+        function tokenize(expr) {
+            // Mapeia operadores em português para inglês
+            const operatorMap = {
+                '\\bE\\b': 'AND',
+                '\\bOU\\b': 'OR',
+                '\\bNÃO\\b': 'NOT',
+                '\\bNAO\\b': 'NOT', // Versão sem acento
+                '\\bXOU\\b': 'XOR',
+                '\\bNE\\b': 'NAND',  // "NÃO E"
+                '\\bNOU\\b': 'NOR',  // "NÃO OU"
+                '\\bXNOR\\b': 'XNOR'
+            };
+
+            let processedExpr = expr;
+            for (const [pt, en] of Object.entries(operatorMap)) {
+                // Usa RegExp para substituir globalmente e sem diferenciar maiúsculas/minúsculas
+                processedExpr = processedExpr.replace(new RegExp(pt, 'gi'), en);
+            }
+            
+            // Adiciona espaços ao redor de parênteses para facilitar a tokenização
+            const spacedExpr = processedExpr.replace(/(\(|\))/g, ' $1 ').replace(/\s+/g, ' ').trim();
+            return spacedExpr.split(' ');
+        }
+
+        function shuntingYard(tokens) {
+            const outputQueue = [];
+            const operatorStack = [];
+            for (const token of tokens) {
+                if (['A', 'B', 'C'].includes(token)) {
+                    outputQueue.push(token);
+                } else if (operators.includes(token)) {
+                    while (operatorStack.length > 0 && operatorStack[operatorStack.length - 1] !== '(' && precedence[operatorStack[operatorStack.length - 1]] >= precedence[token]) {
+                        outputQueue.push(operatorStack.pop());
+                    }
+                    operatorStack.push(token);
+                } else if (token === '(') {
+                    operatorStack.push(token);
+                } else if (token === ')') {
+                    while (operatorStack.length > 0 && operatorStack[operatorStack.length - 1] !== '(') {
+                        outputQueue.push(operatorStack.pop());
+                    }
+                    if (operatorStack.length === 0) throw new Error("Parênteses não correspondentes.");
+                    operatorStack.pop();
+                } else if (token !== '') {
+                    throw new Error(`Token desconhecido: ${token}`);
+                }
+            }
+            while (operatorStack.length > 0) {
+                const op = operatorStack.pop();
+                if (op === '(') throw new Error("Parênteses não correspondentes.");
+                outputQueue.push(op);
+            }
+            return outputQueue;
+        }
+
+        /**
+         * Gera uma lista de nomes de sub-expressões (passos) a partir de uma fila RPN.
+         * Usado para criar os cabeçalhos da tabela.
+         */
+        function getRPNStepNames(rpn) {
+            const nameStack = [];
+            const steps = []; // Armazena os nomes dos passos intermediários
+            const rpnCopy = [...rpn]; // Evita modificar o array original
+            
+            for (const token of rpnCopy) {
+                if (['A', 'B', 'C'].includes(token)) {
+                    nameStack.push(token);
+                } else if (token === 'NOT') {
+                    if (nameStack.length < 1) throw new Error("Expressão malformada (NOT).");
+                    const a_name = nameStack.pop();
+                    const stepName = `(NOT ${a_name})`; // Adiciona parênteses para clareza
+                    nameStack.push(stepName);
+                    steps.push(stepName);
+                } else if (operators.includes(token)) {
+                    if (nameStack.length < 2) throw new Error(`Expressão malformada (${token}).`);
+                    const b_name = nameStack.pop();
+                    const a_name = nameStack.pop();
+                    const stepName = `(${a_name} ${token} ${b_name})`;
+                    nameStack.push(stepName);
+                    steps.push(stepName);
+                }
+            }
+            return steps; // ex: ['(NOT C)', '(A AND B)', '((A AND B) OR (NOT C))']
+        }
+
+        /**
+         * Avalia uma fila RPN e retorna um mapa com os resultados de todos os passos.
+         * Usado para preencher os dados de cada linha da tabela.
+         */
+        function evaluateRPNWithSteps(rpn, values) {
+            const valueStack = [];
+            const nameStack = [];
+            const stepResults = {}; // Mapeia { 'nomeDoPasso': resultado }
+            const rpnCopy = [...rpn];
+
+            for (const token of rpnCopy) {
+                if (['A', 'B', 'C'].includes(token)) {
+                    valueStack.push(values[token]);
+                    nameStack.push(token);
+                    // Adiciona o valor da variável base ao mapa de resultados
+                    if (stepResults[token] === undefined) {
+                        stepResults[token] = values[token];
+                    }
+                } else if (token === 'NOT') {
+                    const a_val = valueStack.pop();
+                    const a_name = nameStack.pop();
+                    const stepName = `(NOT ${a_name})`;
+                    const result = evaluateLogic('NOT', [a_val]);
+                    
+                    valueStack.push(result);
+                    nameStack.push(stepName);
+                    stepResults[stepName] = result;
+                } else if (operators.includes(token)) {
+                    const b_val = valueStack.pop();
+                    const b_name = nameStack.pop();
+                    const a_val = valueStack.pop();
+                    const a_name = nameStack.pop();
+                    const stepName = `(${a_name} ${token} ${b_name})`;
+                    const result = evaluateLogic(token, [a_val, b_val]);
+
+                    valueStack.push(result);
+                    nameStack.push(stepName);
+                    stepResults[stepName] = result;
+                }
+            }
+            return stepResults; // ex: { 'A': true, 'B': false, '(NOT C)': true, ... }
+        }
+
+
+        function handleGenerateCustomTable() {
+            const input = document.getElementById('custom-equation-input');
+            const originalExpr = input.value; // Salva a expressão original para o título
+            const expr = originalExpr.toUpperCase();
+            const errorDisplay = document.getElementById('equation-error');
+            const tableContainer = document.getElementById('custom-truth-table-container');
+            const table = document.getElementById('custom-truth-table');
+            const title = document.getElementById('custom-table-title');
+
+            errorDisplay.textContent = '';
+            tableContainer.classList.add('hidden');
+            table.innerHTML = '';
+
+            if (!expr) {
+                errorDisplay.textContent = 'Por favor, digite uma equação.';
+                return;
+            }
+
+            try {
+                const tokens = tokenize(expr);
+                const variables = [...new Set(tokens.filter(t => ['A', 'B', 'C'].includes(t)))].sort();
+
+                if (variables.length === 0) {
+                    errorDisplay.textContent = 'A equação precisa usar as entradas A, B, ou C.';
+                    return;
+                }
+
+                const rpn = shuntingYard(tokens);
+                const stepNames = getRPNStepNames(rpn); // Nossas novas colunas
+
+                // --- Gerar Cabeçalho ---
+                let headerHTML = '<thead><tr>';
+                variables.forEach(v => headerHTML += `<th>${v}</th>`);
+                stepNames.forEach(name => headerHTML += `<th>${name}</th>`);
+                headerHTML += '</tr></thead>';
+
+                // --- Gerar Corpo ---
+                let bodyHTML = '<tbody>';
+                const numRows = Math.pow(2, variables.length);
+
+                for (let i = 0; i < numRows; i++) {
+                    const values = {};
+                    variables.forEach((v, index) => {
+                        const val = (i >> (variables.length - 1 - index)) & 1 ? true : false;
+                        values[v] = val;
+                    });
+
+                    // Avalia todos os passos de uma vez
+                    const allStepResults = evaluateRPNWithSteps(rpn, values);
+                    
+                    bodyHTML += '<tr>';
+                    
+                    // Adiciona <td> para as variáveis base (A, B, C)
+                    variables.forEach(v => {
+                        const val = values[v];
+                        bodyHTML += `<td class="${val ? 'true' : 'false'}">${val ? 'V' : 'F'}</td>`;
+                    });
+
+                    // Adiciona <td> para cada passo da equação
+                    stepNames.forEach((name, index) => {
+                        const result = allStepResults[name];
+                        const isFinalStep = index === stepNames.length - 1;
+                        // Usa 'V'/'F' para passos intermediários e 'VERDADEIRO'/'FALSO' para o final
+                        const text = result ? (isFinalStep ? 'VERDADEIRO' : 'V') : (isFinalStep ? 'FALSO' : 'F');
+                        bodyHTML += `<td class="${result ? 'true' : 'false'} ${isFinalStep ? 'font-bold' : ''}">${text}</td>`;
+                    });
+
+                    bodyHTML += '</tr>';
+                }
+                bodyHTML += '</tbody>';
+                
+                table.innerHTML = headerHTML + bodyHTML;
+                title.innerHTML = `Tabela Verdade para: <span class="text-cyan-300 font-mono">${originalExpr}</span>`;
+                tableContainer.classList.remove('hidden');
+
+            } catch (error) {
+                console.error(error);
+                errorDisplay.textContent = `Erro na equação: ${error.message}`;
+            }
+        }
+
+        // --- INICIALIZAÇÃO ---
+        window.onload = () => {
+            selectOperator('AND');
+            document.getElementById('generate-custom-table-btn').addEventListener('click', handleGenerateCustomTable);
+        };
+    </script>
+</body>
+</html>
+
