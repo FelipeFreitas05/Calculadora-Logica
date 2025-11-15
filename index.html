@@ -51,49 +51,45 @@
     </style>
 </head>
 <body class="p-4 sm:p-6 md:p-8">
-    <div class="max-w-6xl mx-auto"> <!-- Aumentei o max-width para a tabela maior -->
-        <header class="text-center mb-8">
+    <div class="max-w-6xl mx-auto"> <header class="text-center mb-8">
             <h1 class="text-4xl sm:text-5xl font-bold text-white text-shadow">LogicApex</h1>
             <p class="text-lg text-white/90 mt-2">Onde Você encontra o ponto mais alto da Lógica!</p>
         </header>
 
         <main class="space-y-6">
-            <!-- Seção de Entradas -->
             <div class="card p-6">
                 <h2 class="text-2xl font-bold text-white mb-4 text-center">1. Escolha os valores das Entradas</h2>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <!-- Entrada A -->
                     <div id="input-a-card" class="text-center p-4 bg-white/20 rounded-xl transition-all duration-300">
                         <h3 class="text-xl font-semibold text-white">Entrada A</h3>
-                        <div id="display-a" class="text-4xl font-bold my-3 text-yellow-300">FALSO</div>
+                        <div id="display-a" class="text-3xl font-bold my-3 break-words">FALSO</div>
                         <div class="flex justify-center gap-2">
                             <button onclick="setInputState('a', true)" class="btn-toggle-a w-full py-2 bg-green-500 text-white font-semibold rounded-lg shadow-md hover:bg-green-600 transition-transform transform hover:scale-105">VERDADEIRO</button>
                             <button onclick="setInputState('a', false)" class="btn-toggle-a w-full py-2 bg-red-500 text-white font-semibold rounded-lg shadow-md hover:bg-red-600 transition-transform transform hover:scale-105 active">FALSO</button>
                         </div>
                     </div>
-                    <!-- Entrada B -->
                     <div id="input-b-card" class="text-center p-4 bg-white/20 rounded-xl transition-all duration-300">
                         <h3 class="text-xl font-semibold text-white">Entrada B</h3>
-                        <div id="display-b" class="text-4xl font-bold my-3 text-yellow-300">FALSO</div>
+                        <div id="display-b" class="text-3xl font-bold my-3 break-words">FALSO</div>
                         <div class="flex justify-center gap-2">
                             <button onclick="setInputState('b', true)" class="btn-toggle-b w-full py-2 bg-green-500 text-white font-semibold rounded-lg shadow-md hover:bg-green-600 transition-transform transform hover:scale-105">VERDADEIRO</button>
                             <button onclick="setInputState('b', false)" class="btn-toggle-b w-full py-2 bg-red-500 text-white font-semibold rounded-lg shadow-md hover:bg-red-600 transition-transform transform hover:scale-105 active">FALSO</button>
                         </div>
                     </div>
-                    <!-- Entrada C -->
-                    <div id="input-c-container" class="text-center p-4 bg-white/20 rounded-xl transition-all duration-300 opacity-50">
-                        <h3 class="text-xl font-semibold text-white">Entrada C</h3>
-                        <div id="display-c" class="text-4xl font-bold my-3 text-yellow-300">FALSO</div>
-                        <div class="flex justify-center gap-2">
-                            <button id="btn-c-true" onclick="setInputState('c', true)" class="btn-toggle-c w-full py-2 bg-green-500 text-white font-semibold rounded-lg shadow-md hover:bg-green-600 transition-transform transform hover:scale-105" disabled>VERDADEIRO</button>
-                            <button id="btn-c-false" onclick="setInputState('c', false)" class="btn-toggle-c w-full py-2 bg-red-500 text-white font-semibold rounded-lg shadow-md hover:bg-red-600 transition-transform transform hover:scale-105 active" disabled>FALSO</button>
+                    <div id="input-c-container" class="text-center p-4 bg-white/20 rounded-xl transition-all duration-300">
+                        <div id="input-c-content" class="transition-opacity duration-300 opacity-50">
+                            <h3 class="text-xl font-semibold text-white">Entrada C</h3>
+                            <div id="display-c" class="text-3xl font-bold my-3 break-words">FALSO</div>
+                            <div class="flex justify-center gap-2">
+                                <button id="btn-c-true" onclick="setInputState('c', true)" class="btn-toggle-c w-full py-2 bg-green-500 text-white font-semibold rounded-lg shadow-md hover:bg-green-600 transition-transform transform hover:scale-105" disabled>VERDADEIRO</button>
+                                <button id="btn-c-false" onclick="setInputState('c', false)" class="btn-toggle-c w-full py-2 bg-red-500 text-white font-semibold rounded-lg shadow-md hover:bg-red-600 transition-transform transform hover:scale-105 active" disabled>FALSO</button>
+                            </div>
                         </div>
                         <button id="toggle-c" onclick="toggleC()" class="mt-4 w-full py-2 bg-purple-500 text-white font-bold rounded-lg shadow-lg hover:bg-purple-600 transition">Ligar Entrada C</button>
                     </div>
                 </div>
             </div>
 
-            <!-- Seção de Portas Lógicas -->
             <div class="card p-6">
                 <h2 class="text-2xl font-bold text-white mb-4 text-center">2. Selecione a Porta Lógica</h2>
                 <div class="flex flex-wrap justify-center gap-3 text-center">
@@ -107,29 +103,24 @@
                 </div>
             </div>
             
-            <!-- Seção de Resultado -->
             <div class="card p-6 text-center">
                 <h2 class="text-2xl font-bold text-white mb-2">3. Resultado da Porta Lógica (Saída)</h2>
-                <div id="result-display" class="text-7xl font-extrabold transition-colors duration-300">...</div>
+                 <div id="result-display" class="text-4xl sm:text-5xl lg:text-7xl font-extrabold transition-colors duration-300 break-words">...</div>
             </div>
 
-            <!-- Seção de Explicação -->
             <div class="card p-6">
                 <h2 id="explanation-title" class="text-2xl font-bold text-white mb-2">O que é a porta E (AND)?</h2>
                 <p id="explanation-text" class="text-white/90 text-lg"></p>
             </div>
 
-            <!-- Seção Tabela Verdade para Porta Lógica -->
             <div class="card p-6">
                 <h2 class="text-2xl font-bold text-white mb-4">Tabela Verdade da Porta Lógica</h2>
                 <div class="overflow-x-auto">
                     <table id="truth-table" class="w-full text-white truth-table">
-                        <!-- Conteúdo gerado por JavaScript -->
-                    </table>
+                        </table>
                 </div>
             </div>
 
-            <!-- Seção de Equação Personalizada -->
             <div class="card p-6">
                 <h2 class="text-2xl font-bold text-white mb-4 text-center">4. Monte sua Própria Equação</h2>
                 <div class="flex flex-col sm:flex-row gap-4 items-center">
@@ -139,13 +130,11 @@
                  <p id="equation-error" class="text-red-400 mt-2 text-center h-6"></p>
             </div>
 
-            <!-- Seção Tabela Verdade da Equação -->
             <div id="custom-truth-table-container" class="card p-6 hidden">
                 <h2 id="custom-table-title" class="text-2xl font-bold text-white mb-4">...</h2>
                 <div class="overflow-x-auto">
                     <table id="custom-truth-table" class="w-full text-white truth-table">
-                        <!-- Conteúdo gerado por JavaScript -->
-                    </table>
+                        </table>
                 </div>
             </div>
 
@@ -167,6 +156,16 @@
             'XNOR': { title: 'O que é a porta NÃO OU Exclusivo (XNOR)?', text: 'A porta XNOR é o oposto da XOR. Ela retorna VERDADEIRO se um número <strong>PAR</strong> de entradas for VERDADEIRO (incluindo zero). Com duas entradas, isso significa que elas devem ser <strong>IGUAIS</strong>. É a "porta da igualdade": se as entradas são iguais, a saída é verdadeira.' },
         };
         
+        // --- CORREÇÃO APLICADA: Função auxiliar do Código 1 ---
+        function updateInputDisplay(id, value) {
+            const display = document.getElementById(id);
+            const isTrue = value; // isTrue será true ou false
+
+            // Define o texto
+            display.textContent = isTrue ? 'VERDADEIRO' : 'FALSO';
+            display.style.color = isTrue ? '#86efac' : '#fda4af';
+        }
+
         function evaluateLogic(operator, inputs) {
             switch (operator) {
                 case 'AND': return inputs.every(val => val === true);
@@ -188,9 +187,11 @@
         }
 
         function updateUI() {
-            document.getElementById('display-a').textContent = state.a ? 'VERDADE' : 'FALSO';
-            document.getElementById('display-b').textContent = state.b ? 'VERDADE' : 'FALSO';
-            document.getElementById('display-c').textContent = state.c ? 'VERDADE' : 'FALSO';
+            // --- CORREÇÃO APLICADA: Usando a função auxiliar do Código 1 ---
+            updateInputDisplay('display-a', state.a);
+            updateInputDisplay('display-b', state.b);
+            updateInputDisplay('display-c', state.c);
+            // --- Fim da Correção ---
 
             const result = calculate();
             const resultDisplay = document.getElementById('result-display');
@@ -267,20 +268,22 @@
             updateUI();
         }
 
+        // --- CORREÇÃO APLICADA: Lógica 'toggleC' do Código 1 ---
         function toggleC() {
             state.cEnabled = !state.cEnabled;
-            const container = document.getElementById('input-c-container');
+            // O alvo agora é o contêiner do conteúdo
+            const contentContainer = document.getElementById('input-c-content'); 
             const toggleBtn = document.getElementById('toggle-c');
             const cButtons = [document.getElementById('btn-c-true'), document.getElementById('btn-c-false')];
 
             if (state.cEnabled) {
-                container.classList.remove('opacity-50');
+                contentContainer.classList.remove('opacity-50'); // Remove opacidade do conteúdo
                 toggleBtn.textContent = 'Desligar Entrada C';
                 toggleBtn.classList.remove('bg-purple-500', 'hover:bg-purple-600');
                 toggleBtn.classList.add('bg-yellow-500', 'hover:bg-yellow-600');
                 cButtons.forEach(btn => btn.disabled = false);
             } else {
-                container.classList.add('opacity-50');
+                contentContainer.classList.add('opacity-50'); // Adiciona opacidade ao conteúdo
                 toggleBtn.textContent = 'Ligar Entrada C';
                 toggleBtn.classList.add('bg-purple-500', 'hover:bg-purple-600');
                 toggleBtn.classList.remove('bg-yellow-500', 'hover:bg-yellow-600');
@@ -290,6 +293,7 @@
         }
 
         // --- SEÇÃO 2: LÓGICA DO CONSTRUTOR DE EQUAÇÕES ---
+        // (Esta seção permanece inalterada, pois já era do Código 2)
 
         const precedence = { 'NOT': 4, 'AND': 3, 'NAND': 3, 'OR': 2, 'NOR': 2, 'XOR': 2, 'XNOR': 2 };
         const operators = Object.keys(precedence);
@@ -512,4 +516,3 @@
     </script>
 </body>
 </html>
-
